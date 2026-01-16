@@ -1,0 +1,34 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# SQLite databases and backups
+app/data/pos.db
+app/data/backups/
+*.db
+*.sqlite*
+
+# Exports / generated data
+sales.csv
+sales.xlsx
+dbProducts.xlsx
+
+# Build artifacts
+build/
+dist/
+*.spec
+
+# Logs
+*.log
+
+# IDE/editor
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
