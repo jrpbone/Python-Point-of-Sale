@@ -54,14 +54,13 @@ pip install openpyxl
 
 ## Usage
 
-### Run the Application
+### Run the Application (terminal)
 
 ```bash
 python main.py
 ```
 
-
-### Or create the .exe file
+### Then create the exe file
 
 ```
 py -m PyInstaller --noconfirm --clean --name "PyPOS" --windowed --icon "assets\pos.ico" --add-data "assets;assets" --add-data "app\data;app\data" --contents-directory . main.py
@@ -122,7 +121,7 @@ Note: The UI displays amounts in Php
 
 Log in UI
 
-* Use PNG file, place inside /assets folder.
+* Use PNG file, place inside /assets folder **named **"shop.png**".**
 
 ![1768563114150](image/README/1768563114150.png)
 
@@ -130,6 +129,6 @@ POS UI
 
 ![1768563188751](image/README/1768563188751.png)
 
-User management dialog box: Admin access only
+User management dialog box: **Admin access only**
 
 ![1768563195635](image/README/1768563195635.png)
