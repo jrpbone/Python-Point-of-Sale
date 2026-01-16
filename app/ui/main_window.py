@@ -22,7 +22,7 @@ class MainWindow:
         self.cart_service = CartService(self.state.cart)
         self.controller = PosController(self.root, self.service, self.state, self.cart_service)
 
-        self.root.title("JMB Electronics & Electrical Supply POS")
+        self.root.title("Python POS")
         # Maximize window
         self.root.state("zoomed")
 

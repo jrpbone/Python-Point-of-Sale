@@ -13,7 +13,6 @@ app/data/backups/
 *.sqlite*
 
 # Exports / generated data
-sales.csv
 sales.xlsx
 dbProducts.xlsx
 
@@ -32,3 +31,6 @@ dist/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Images
+
