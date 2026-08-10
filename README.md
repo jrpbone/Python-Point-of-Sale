@@ -166,10 +166,11 @@ Install PyInstaller, then run:
 
 ```powershell
 python -m pip install pyinstaller
-python -m PyInstaller --noconfirm --clean --name "PyPOS" --windowed --icon "assets\pos.ico" --collect-all openpyxl --add-data "assets;assets" --add-data "app\data;app\data" --contents-directory . main.py
+python -m PyInstaller --noconfirm --clean PyPOS.spec
 ```
 
-The packaged application is written to `dist/PyPOS/`.
+The standalone application is written to `dist/PyPOS.exe`. Runtime data is
+stored in `%LOCALAPPDATA%\PyPOS` so sales and settings persist between launches.
 
 ## Contributing
 

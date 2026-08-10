@@ -1,7 +1,36 @@
 import logging
+import os
+from pathlib import Path
+import shutil
 import sys
 import threading
 from logging.handlers import RotatingFileHandler
+
+
+def _configure_frozen_tcl():
+    """Place Tcl/Tk support files outside PyInstaller's temporary directory."""
+    if not getattr(sys, "frozen", False):
+        return
+
+    bundle_dir = Path(sys._MEIPASS)
+    local_app_data = os.environ.get("LOCALAPPDATA")
+    runtime_dir = (
+        Path(local_app_data) / "PyPOS" / "runtime"
+        if local_app_data
+        else Path.home() / "AppData" / "Local" / "PyPOS" / "runtime"
+    )
+    for source_name, environment_name in (
+        ("_tcl_data", "TCL_LIBRARY"),
+        ("_tk_data", "TK_LIBRARY"),
+    ):
+        source = bundle_dir / source_name
+        destination = runtime_dir / source_name
+        if source.is_dir():
+            shutil.copytree(source, destination, dirs_exist_ok=True)
+            os.environ[environment_name] = str(destination)
+
+
+_configure_frozen_tcl()
 
 from app.db import DB_PATH, init_db, get_connection, seed_data
 from app.services.pos_service import PosService

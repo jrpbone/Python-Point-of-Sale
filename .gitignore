@@ -20,7 +20,7 @@ dbProducts.xlsx
 build/
 dist/
 *.spec
-PyPOS.spec
+!PyPOS.spec
 
 # Logs
 *.log

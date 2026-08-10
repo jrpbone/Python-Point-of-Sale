@@ -1,11 +1,24 @@
 from datetime import datetime
+import os
 from pathlib import Path
 import shutil
 import sqlite3
+import sys
 
 from app.security import hash_pin
 
-DB_PATH = Path(__file__).resolve().parent / "data" / "pos.db"
+
+def _default_data_dir():
+    """Return a persistent, writable data directory for this installation."""
+    if getattr(sys, "frozen", False):
+        local_app_data = os.environ.get("LOCALAPPDATA")
+        if local_app_data:
+            return Path(local_app_data) / "PyPOS"
+        return Path.home() / "AppData" / "Local" / "PyPOS"
+    return Path(__file__).resolve().parent / "data"
+
+
+DB_PATH = _default_data_dir() / "pos.db"
 
 
 def get_connection():

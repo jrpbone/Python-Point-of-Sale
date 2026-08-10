@@ -1,8 +1,10 @@
 import sqlite3
+import sys
 from datetime import datetime
 from pathlib import Path
 
 from app.settings import TAX_RATE, TAX_ROUNDING
+from app.db import DB_PATH
 from app.repositories.audit_repository import AuditRepository
 from app.repositories.category_repository import CategoryRepository
 from app.repositories.payment_repository import PaymentRepository
@@ -10,6 +12,7 @@ from app.repositories.product_repository import ProductRepository
 from app.repositories.sale_repository import SaleRepository
 from app.repositories.stock_repository import StockRepository
 from app.repositories.user_repository import UserRepository
+
 
 class PosService:
     MAX_IMPORT_PRICE = 1_000_000.0
@@ -24,7 +27,13 @@ class PosService:
         self.payments = PaymentRepository(conn)
         self.stock = StockRepository(conn)
         self.audit = AuditRepository(conn)
-        self.base_dir = Path(__file__).resolve().parents[2]
+        # Frozen one-file builds run from a temporary extraction directory.
+        # Keep generated exports beside the persistent application database.
+        self.base_dir = (
+            DB_PATH.parent
+            if getattr(sys, "frozen", False)
+            else Path(__file__).resolve().parents[2]
+        )
 
     def reconnect(self):
         try:
