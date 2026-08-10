@@ -19,8 +19,6 @@ dbProducts.xlsx
 # Build artifacts
 build/
 dist/
-*.spec
-!PyPOS.spec
 
 # Logs
 *.log
