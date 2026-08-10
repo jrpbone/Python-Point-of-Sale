@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
-from app.ui.config import get_palette
+from app.ui.config import apply_window_icon, get_palette
 from app.ui.formatting import format_currency
 
 
@@ -10,6 +10,7 @@ class ErrorListDialog:
         self.colors = colors or get_palette()
         top = self.top = tk.Toplevel(parent)
         top.title(title)
+        apply_window_icon(top)
         top.grab_set()
         top.transient(parent)
 
@@ -18,11 +19,11 @@ class ErrorListDialog:
         container = ttk.Frame(top, style="Main.TFrame", padding=20)
         container.pack(fill="both", expand=True)
 
-        ttk.Label(container, text=title, style="Header.TLabel").pack(anchor="w")
+        ttk.Label(container, text=title, style="PageTitle.TLabel").pack(anchor="w")
         ttk.Label(
             container,
             text=f"{len(errors)} issue(s) found.",
-            style="Subheader.TLabel",
+            style="Muted.TLabel",
         ).pack(anchor="w", pady=(0, 10))
 
         text_frame = ttk.Frame(container, style="Main.TFrame")
@@ -37,8 +38,16 @@ class ErrorListDialog:
             wrap="none",
             yscrollcommand=scrollbar.set,
             background="white",
+            foreground=self.colors["text"],
+            selectbackground=self.colors["primary_soft"],
+            selectforeground=self.colors["primary_dark"],
+            highlightbackground=self.colors["border"],
+            highlightcolor=self.colors["primary"],
+            highlightthickness=1,
             relief="solid",
-            borderwidth=1,
+            borderwidth=0,
+            padx=10,
+            pady=10,
         )
         text.pack(side="left", fill="both", expand=True)
         scrollbar.config(command=text.yview)
@@ -47,7 +56,12 @@ class ErrorListDialog:
             text.insert("end", f"{error}\n")
         text.config(state="disabled")
 
-        ttk.Button(container, text="Close", command=top.destroy).pack(
+        ttk.Button(
+            container,
+            text="Close",
+            style="Secondary.TButton",
+            command=top.destroy,
+        ).pack(
             pady=(10, 0), anchor="e"
         )
 
@@ -71,6 +85,7 @@ class ProgressDialog:
         self.colors = colors or get_palette()
         top = self.top = tk.Toplevel(parent)
         top.title(title)
+        apply_window_icon(top)
         top.grab_set()
         top.transient(parent)
 
@@ -79,8 +94,8 @@ class ProgressDialog:
         container = ttk.Frame(top, style="Main.TFrame", padding=20)
         container.pack(fill="both", expand=True)
 
-        ttk.Label(container, text=title, style="Subheader.TLabel").pack(anchor="w")
-        self.progress_label = ttk.Label(container, text="0 / 0", style="Card.TLabel")
+        ttk.Label(container, text=title, style="PageTitle.TLabel").pack(anchor="w")
+        self.progress_label = ttk.Label(container, text="0 / 0", style="Muted.TLabel")
         self.progress_label.pack(anchor="w", pady=(0, 8))
 
         self.progress = ttk.Progressbar(
@@ -119,6 +134,7 @@ class ImportPreviewDialog:
         self.colors = colors or get_palette()
         top = self.top = tk.Toplevel(parent)
         top.title("Import Preview")
+        apply_window_icon(top)
         top.grab_set()
         top.transient(parent)
 
@@ -127,7 +143,7 @@ class ImportPreviewDialog:
         container = ttk.Frame(top, style="Main.TFrame", padding=20)
         container.pack(fill="both", expand=True)
 
-        ttk.Label(container, text="Import Preview", style="Header.TLabel").pack(
+        ttk.Label(container, text="Import preview", style="PageTitle.TLabel").pack(
             anchor="w"
         )
         stats_text = (
@@ -136,7 +152,7 @@ class ImportPreviewDialog:
             f"{summary.get('invalid', 0)} invalid. "
             f"New: {summary.get('add', 0)}, Updates: {summary.get('update', 0)}."
         )
-        ttk.Label(container, text=stats_text, style="Subheader.TLabel").pack(
+        ttk.Label(container, text=stats_text, style="Muted.TLabel").pack(
             anchor="w", pady=(0, 10)
         )
 
@@ -181,10 +197,16 @@ class ImportPreviewDialog:
             ttk.Button(
                 actions,
                 text="View Errors",
+                style="Secondary.TButton",
                 command=lambda: ErrorListDialog(parent, "Import Errors", errors, self.colors),
             ).pack(side="left")
 
-        ttk.Button(actions, text="Cancel", command=top.destroy).pack(side="right")
+        ttk.Button(
+            actions,
+            text="Cancel",
+            style="Secondary.TButton",
+            command=top.destroy,
+        ).pack(side="right")
 
         import_button = ttk.Button(
             actions,

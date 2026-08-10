@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
-from app.ui.config import get_palette
+from app.ui.config import apply_window_icon, get_palette
 
 
 class RestoreBackupDialog:
@@ -10,6 +10,7 @@ class RestoreBackupDialog:
         self.backups = list(backups)
         top = self.top = tk.Toplevel(parent)
         top.title("Restore Backup")
+        apply_window_icon(top)
         top.grab_set()
         top.transient(parent)
 
@@ -18,13 +19,13 @@ class RestoreBackupDialog:
         container = ttk.Frame(top, style="Main.TFrame", padding=20)
         container.pack(fill="both", expand=True)
 
-        ttk.Label(container, text="Select a backup to restore", style="Header.TLabel").pack(
+        ttk.Label(container, text="Restore a backup", style="PageTitle.TLabel").pack(
             anchor="w"
         )
         ttk.Label(
             container,
-            text=f"{len(self.backups)} backup(s) found.",
-            style="Subheader.TLabel",
+            text=f"Select from {len(self.backups)} available backup(s).",
+            style="Muted.TLabel",
         ).pack(anchor="w", pady=(0, 10))
 
         list_frame = ttk.Frame(container, style="Main.TFrame")
@@ -36,7 +37,17 @@ class RestoreBackupDialog:
         self.listbox = tk.Listbox(
             list_frame,
             height=10,
-            activestyle="dotbox",
+            activestyle="none",
+            background=self.colors["bg_card"],
+            foreground=self.colors["text"],
+            selectbackground=self.colors["primary_soft"],
+            selectforeground=self.colors["primary_dark"],
+            highlightbackground=self.colors["border"],
+            highlightcolor=self.colors["primary"],
+            highlightthickness=1,
+            borderwidth=0,
+            relief="flat",
+            font=("Segoe UI", 11),
             yscrollcommand=scrollbar.set,
         )
         self.listbox.pack(side="left", fill="both", expand=True)
@@ -57,7 +68,12 @@ class RestoreBackupDialog:
             state="disabled",
         )
         self.restore_button.pack(side="right", padx=(0, 8))
-        ttk.Button(actions, text="Cancel", command=top.destroy).pack(side="right")
+        ttk.Button(
+            actions,
+            text="Cancel",
+            style="Secondary.TButton",
+            command=top.destroy,
+        ).pack(side="right")
 
         self.listbox.bind("<<ListboxSelect>>", self._on_select)
         self.listbox.bind("<Double-Button-1>", lambda _e: self._confirm())

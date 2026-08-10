@@ -3,7 +3,7 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import ttk
 
-from app.ui.config import apply_theme, get_palette
+from app.ui.config import apply_theme, apply_window_icon, get_palette
 from app.ui.controllers.pos_controller import PosController
 from app.ui.services.cart_service import CartService
 from app.ui.state import MainWindowState
@@ -22,8 +22,11 @@ class MainWindow:
         self.cart_service = CartService(self.state.cart)
         self.controller = PosController(self.root, self.service, self.state, self.cart_service)
 
-        self.root.title("Python POS")
-        # Maximize window
+        self.root.title("PyPOS | Point of Sale")
+        self.root.configure(background=self.state.colors["bg_main"])
+        self.root.minsize(1120, 720)
+        apply_window_icon(self.root)
+
         self.root.state("zoomed")
 
         self.setup_styles()

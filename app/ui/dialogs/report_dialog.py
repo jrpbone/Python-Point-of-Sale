@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
-from app.ui.config import FONT_FAMILY, get_palette
+from app.ui.config import FONT_FAMILY, apply_window_icon, get_palette
 from app.ui.formatting import format_currency
 
 
@@ -10,6 +10,7 @@ class ReportDialog:
         self.colors = colors or get_palette()
         top = self.top = tk.Toplevel(parent)
         top.title("Sales Summary")
+        apply_window_icon(top)
         top.grab_set()
         top.transient(parent)
 
@@ -18,7 +19,7 @@ class ReportDialog:
         container = ttk.Frame(top, style="Main.TFrame", padding=24)
         container.pack(fill="both", expand=True)
 
-        ttk.Label(container, text="Sales Summary", style="Header.TLabel").pack(anchor="w")
+        ttk.Label(container, text="Sales summary", style="PageTitle.TLabel").pack(anchor="w")
 
         totals = summary.get("totals", {})
         today = totals.get("today", {})
@@ -99,7 +100,12 @@ class ReportDialog:
 
         actions = ttk.Frame(container, style="Main.TFrame")
         actions.pack(fill="x", pady=(12, 0))
-        ttk.Button(actions, text="Close", command=top.destroy).pack(anchor="e")
+        ttk.Button(
+            actions,
+            text="Close",
+            style="Secondary.TButton",
+            command=top.destroy,
+        ).pack(anchor="e")
 
         self._center_to_parent(parent)
 

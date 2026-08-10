@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
 
-from app.ui.config import FONT_FAMILY, get_palette
+from app.ui.config import FONT_FAMILY, apply_window_icon, get_palette
 
 
 class ManageUsersDialog:
@@ -28,6 +28,7 @@ class ManageUsersDialog:
 
         top = self.top = tk.Toplevel(parent)
         top.title("Manage Users")
+        apply_window_icon(top)
         top.grab_set()
         top.transient(parent)
         top.configure(background=self.colors["bg_main"])
@@ -35,13 +36,14 @@ class ManageUsersDialog:
         container = ttk.Frame(top, style="Main.TFrame", padding=24)
         container.pack(fill="both", expand=True)
 
-        ttk.Label(container, text="Manage Users", style="Header.TLabel").pack(anchor="w")
+        ttk.Label(container, text="User management", style="PageTitle.TLabel").pack(anchor="w")
 
         table_controls = ttk.Frame(container, style="Main.TFrame")
         table_controls.pack(fill="x", pady=(6, 0))
         self.view_button = ttk.Button(
             table_controls,
             text="Inactive Users",
+            style="Secondary.TButton",
             command=self._toggle_view,
         )
         self.view_button.pack(side="right")
@@ -70,7 +72,7 @@ class ManageUsersDialog:
             form_card,
             text="Select a user to edit.",
             style="Card.TLabel",
-            font=(FONT_FAMILY, 11, "bold"),
+            font=(FONT_FAMILY, 12, "bold"),
         )
         self.selected_label.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0, 10))
 
@@ -159,6 +161,7 @@ class ManageUsersDialog:
         self.toggle_active_button = ttk.Button(
             actions,
             text="Make Inactive",
+            style="DangerOutline.TButton",
             command=self._toggle_active,
         )
         self.toggle_active_button.pack(side="left", padx=(0, 10))
@@ -176,7 +179,12 @@ class ManageUsersDialog:
             command=self._reset_pin,
         ).pack(side="left")
 
-        ttk.Button(actions, text="Close", command=top.destroy).pack(side="right")
+        ttk.Button(
+            actions,
+            text="Close",
+            style="Secondary.TButton",
+            command=top.destroy,
+        ).pack(side="right")
 
         self._load_users()
         self._center_to_parent(parent)
@@ -290,7 +298,9 @@ class ManageUsersDialog:
         if self.view_mode == "inactive":
             self.view_mode = "active"
             self.view_button.config(text="Inactive Users")
-            self.toggle_active_button.config(text="Make Inactive")
+            self.toggle_active_button.config(
+                text="Make Inactive", style="DangerOutline.TButton"
+            )
         self._load_users()
         if self.tree.exists(str(user_id)):
             self.tree.selection_set(str(user_id))
@@ -307,9 +317,13 @@ class ManageUsersDialog:
         label = "Inactive Users" if self.view_mode == "active" else "Active Users"
         self.view_button.config(text=label)
         if self.view_mode == "active":
-            self.toggle_active_button.config(text="Make Inactive")
+            self.toggle_active_button.config(
+                text="Make Inactive", style="DangerOutline.TButton"
+            )
         else:
-            self.toggle_active_button.config(text="Make Active")
+            self.toggle_active_button.config(
+                text="Make Active", style="Secondary.TButton"
+            )
         self._load_users()
 
     def _toggle_active(self):

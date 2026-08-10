@@ -15,7 +15,7 @@ Run sales, track inventory, manage staff, and keep business data on the device -
 
 </div>
 
-![PyPOS checkout workspace](image/README/1768563188751.png)
+![PyPOS checkout workspace](image/README/dashboard.png)
 
 ## Overview
 
@@ -34,23 +34,13 @@ The application runs entirely on the local machine. Its layered Python codebase 
 | Change calculation | Local SQLite persistence | Reports and audit logging |
 | Automatic sales recording | Backup on logout and safe restore | Protected cart and data actions |
 
-## Screenshots
+## Interface
 
 <details open>
-<summary><strong>Login</strong></summary>
+<summary><strong>Secure login</strong></summary>
 <br>
 
-![PyPOS login screen](image/README/1768563114150.png)
-
-</details>
-
-<details>
-<summary><strong>User management</strong></summary>
-<br>
-
-<div align="center">
-  <img src="image/README/1768563195635.png" alt="PyPOS user management dialog" width="520">
-</div>
+![PyPOS secure login screen](image/README/login.png)
 
 </details>
 
@@ -83,10 +73,10 @@ Activate the virtual environment:
 source .venv/bin/activate
 ```
 
-Install the Excel dependency and launch the app:
+Install the application dependencies and launch the app:
 
 ```bash
-python -m pip install openpyxl
+python -m pip install -r requirements.txt
 python main.py
 ```
 
@@ -162,13 +152,13 @@ PyPOS creates operational files locally; generated databases, backups, exports, 
 
 ## Development
 
-Run the smoke-test suite from the repository root:
+Run the comprehensive test suite from the repository root:
 
 ```bash
-python -m unittest tests.test_smoke -v
+python test.py
 ```
 
-The tests cover product import/update, product export, and database backup/restore. For a file-by-file guide to the codebase and its workflows, see [`DOCUMENTATION.md`](DOCUMENTATION.md).
+The suite covers authentication, user management, product imports, cart behavior, checkout transactions, inventory, reporting, spreadsheets, backup/restore, controller flows, application resources, and Tkinter screen construction. For a file-by-file guide to the codebase and its workflows, see [`DOCUMENTATION.md`](DOCUMENTATION.md).
 
 ### Build a Windows executable
 
@@ -176,7 +166,7 @@ Install PyInstaller, then run:
 
 ```powershell
 python -m pip install pyinstaller
-python -m PyInstaller --noconfirm --clean --name "PyPOS" --windowed --icon "assets\pos.ico" --add-data "assets;assets" --add-data "app\data;app\data" --contents-directory . main.py
+python -m PyInstaller --noconfirm --clean --name "PyPOS" --windowed --icon "assets\pos.ico" --collect-all openpyxl --add-data "assets;assets" --add-data "app\data;app\data" --contents-directory . main.py
 ```
 
 The packaged application is written to `dist/PyPOS/`.

@@ -22,6 +22,7 @@ from app.ui.config import (
     PAYMENT_SUBTOTAL_FONT_SIZE,
     PAYMENT_TOTAL_FONT_SIZE,
     FONT_FAMILY,
+    apply_window_icon,
     get_palette,
 )
 from app.ui.formatting import format_currency
@@ -34,6 +35,7 @@ class PaymentDialog:
         self.colors = colors or get_palette()
         top = self.top = tk.Toplevel(parent)
         top.title("Payment")
+        apply_window_icon(top)
         top.grab_set()
         top.transient(parent)
 
@@ -49,7 +51,7 @@ class PaymentDialog:
         card.pack(fill="x", pady=PAYMENT_CARD_OUTER_PAD)
         card.columnconfigure(1, weight=1)
 
-        ttk.Label(card, text="Payment Details", style="Subheader.TLabel").grid(
+        ttk.Label(card, text="CHECKOUT", style="Eyebrow.TLabel").grid(
             row=0,
             column=0,
             columnspan=2,
@@ -58,7 +60,16 @@ class PaymentDialog:
             pady=PAYMENT_HEADER_PADY,
         )
 
-        row = 1
+        ttk.Label(card, text="Payment details", style="Header.TLabel").grid(
+            row=1,
+            column=0,
+            columnspan=2,
+            sticky="w",
+            padx=PAYMENT_HEADER_PADX,
+            pady=(0, 16),
+        )
+
+        row = 2
         ttk.Label(card, text="Subtotal", style="Card.TLabel").grid(
             row=row,
             column=0,
@@ -202,7 +213,12 @@ class PaymentDialog:
         self.confirm_button.pack(
             side="left", fill="x", expand=True, padx=PAYMENT_CONFIRM_PADX
         )
-        ttk.Button(actions, text="Cancel", command=top.destroy).pack(side="right")
+        ttk.Button(
+            actions,
+            text="Cancel",
+            style="Secondary.TButton",
+            command=top.destroy,
+        ).pack(side="right")
 
         self.result = None
         self.discount_var.trace_add("write", lambda *_: self._update_totals())

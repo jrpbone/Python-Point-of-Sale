@@ -20,6 +20,7 @@ dbProducts.xlsx
 build/
 dist/
 *.spec
+PyPOS.spec
 
 # Logs
 *.log
@@ -34,4 +35,3 @@ Thumbs.db
 inno.iss
 
 # Images
-
