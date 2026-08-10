@@ -1,134 +1,190 @@
-# Python POS
+<div align="center">
 
-## Project Description
+# PyPOS
 
-- What it does: Desktop point-of-sale system for product lookup, cart management, checkout, inventory adjustments, admin import/export, user management, backup/restore, and audit logging.
-- Who it is for: Small retail or kiosk operations needing an offline-capable POS.
-- Core purpose: Provide a lightweight, local POS workflow with inventory tracking and admin controls.
+### A lightweight, offline point-of-sale system built with Python
 
-## Key Features
+Run sales, track inventory, manage staff, and keep business data on the device - without a browser or cloud service.
 
-- User login with username or first name and PIN (PINs are stored hashed).
-- Product lookup by SKU or barcode.
-- Cart management with add/remove/clear actions and low-stock warnings.
-- Checkout with discount, tax calculation, and payment methods (Cash, Card, E-Wallet).
-- Sales logging with export to `sales.xlsx`.
-- Product import from `.xlsx` or `.csv` with validation and preview; export to `.xlsx`.
-- Admin-only actions for reports, database backup/restore, and user management.
-- User management: add users, update usernames, reset PINs, activate/deactivate cashier accounts, and view inactive users.
-- Audit logging for sales and admin actions.
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![Tkinter](https://img.shields.io/badge/UI-Tkinter-2C5F2D)](https://docs.python.org/3/library/tkinter.html)
+[![SQLite](https://img.shields.io/badge/Database-SQLite-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## System Architecture
+[Get started](#quick-start) | [Explore features](#features) | [Read the docs](DOCUMENTATION.md)
 
-- Frontend/UI: Tkinter views and dialogs (`app/ui/views`, `app/ui/dialogs`).
-- Controller layer: `PosController` coordinates UI actions and admin gating.
-- Business logic: `PosService` and `CartService`.
-- Data access: repository classes in `app/repositories/`.
-- Database: SQLite file at `app/data/pos.db`.
+</div>
 
-## Tech Stack
+![PyPOS checkout workspace](image/README/1768563188751.png)
 
-- Language: Python.
-- UI Framework: Tkinter (ttk).
-- Database: SQLite (local file).
-- Libraries:
-  - `openpyxl` (required for `.xlsx` import/export).
-  - Standard library modules: `sqlite3`, `csv`, `threading`, `logging`, `pathlib`.
+## Overview
 
-## Installation & Setup
+PyPOS is a desktop checkout application for small shops, kiosks, and learning projects. It combines a keyboard-friendly sales screen with local SQLite storage, role-based administration, spreadsheet import/export, and automatic database backups.
 
-### Prerequisites
+The application runs entirely on the local machine. Its layered Python codebase also makes it a practical reference project for Tkinter UI architecture, service/repository separation, and transactional SQLite workflows.
 
-- Python 3.11+ (per `DOCUMENTATION.md`).
-- `openpyxl` if you need Excel import/export.
+## Features
 
-### Installation Steps
+| Checkout | Inventory and data | Administration |
+| --- | --- | --- |
+| SKU and barcode lookup | Live stock adjustments | Admin and cashier roles |
+| Quantity and cart controls | Low-stock warnings | PIN-based authentication |
+| Cash, card, and e-wallet payments | CSV/XLSX product import | User creation and PIN resets |
+| Discounts and configurable tax | Product and sales exports | Cashier activation/deactivation |
+| Change calculation | Local SQLite persistence | Reports and audit logging |
+| Automatic sales recording | Backup on logout and safe restore | Protected cart and data actions |
 
-1) Clone repository (https://github.com/jrpbone/Python-Point-of-Sale.git).
-2) (Optional) Create and activate a virtual environment since env was installed globally.
-3) Install Excel dependency if needed:
+## Screenshots
+
+<details open>
+<summary><strong>Login</strong></summary>
+<br>
+
+![PyPOS login screen](image/README/1768563114150.png)
+
+</details>
+
+<details>
+<summary><strong>User management</strong></summary>
+<br>
+
+<div align="center">
+  <img src="image/README/1768563195635.png" alt="PyPOS user management dialog" width="520">
+</div>
+
+</details>
+
+## Quick start
+
+### Requirements
+
+- Python 3.11 or newer
+- Tkinter (included with standard Windows and macOS Python installations)
+- `openpyxl` for Excel imports and exports
+
+### Install and run
 
 ```bash
-pip install openpyxl
+git clone https://github.com/jrpbone/Python-Point-of-Sale.git
+cd Python-Point-of-Sale
+
+python -m venv .venv
 ```
 
-## Usage
+Activate the virtual environment:
 
-### Run the Application (terminal)
+```powershell
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+```
 
 ```bash
+# macOS / Linux
+source .venv/bin/activate
+```
+
+Install the Excel dependency and launch the app:
+
+```bash
+python -m pip install openpyxl
 python main.py
 ```
 
-### Then create the exe file
+On first launch, PyPOS creates its database and seeds the administrator account.
 
+| Username | PIN | Role |
+| --- | --- | --- |
+| `admin` | `admin` | Administrator |
+
+> [!IMPORTANT]
+> The seeded credentials are intended for local evaluation. Change the administrator PIN before using the application with real business data.
+
+## Basic workflow
+
+1. Sign in and import the sample `products.xlsx` catalog, or load your own CSV/XLSX file.
+2. Enter or scan a product SKU/barcode, choose a quantity, and add it to the current sale.
+3. Select **Checkout / Pay**, then enter the discount, payment method, and amount received.
+4. Use the admin toolbar to export data, view reports, manage users, or restore a backup.
+
+Amounts are displayed in Philippine pesos (`Php`). Tax is disabled by default and can be configured in [`app/settings.py`](app/settings.py).
+
+## Architecture
+
+```text
+Tkinter views and dialogs
+          |
+          v
+     PosController
+          |
+          v
+ PosService / CartService
+          |
+          v
+ Repository classes
+          |
+          v
+        SQLite
 ```
-py -m PyInstaller --noconfirm --clean --name "PyPOS" --windowed --icon "assets\pos.ico" --add-data "assets;assets" --add-data "app\data;app\data" --contents-directory . main.py
-```
 
-### Basic Flow
+The UI delegates workflows to the controller, business rules live in services, and repositories isolate table-level database access. This keeps presentation, transaction logic, and persistence independently maintainable.
 
-1) Launch the app; the database schema and seed data are created on first run.
-2) Log in:
-   - Default admin user from `app/db.py`: username `admin`, PIN `admin`.
-3) Add items by SKU or barcode and set quantities.
-4) Checkout:
-   - Enter discount and payment details.
-   - Supported methods: Cash, Card, E-Wallet.
-5) Admin actions (requires admin role or PIN prompt):
-   - Manage users (create, reset PINs, activate/deactivate).
-   - Import/export products.
-   - Backup/restore the database.
-   - View sales reports.
-
-Note: The UI displays amounts in Php
-
-## Project Structure
-
-```
+```text
 .
-├─ app/
-│  ├─ data/                 # Runtime DB, backups, logs
-│  ├─ db.py                 # SQLite setup, schema, seed, backup/restore
-│  ├─ models.py             # Product/User dataclasses
-│  ├─ security.py           # PIN hashing and verification
-│  ├─ settings.py           # Tax configuration
-│  ├─ repositories/         # Table-level data access
-│  ├─ services/             # POS business logic
-│  └─ ui/
-│     ├─ controllers/       # UI controller (PosController)
-│     ├─ dialogs/           # Admin, payment, import, report dialogs
-│     ├─ services/          # CartService
-│     ├─ views/             # Login and POS views
-│     └─ config.py          # UI constants and theme
-├─ assets/                  # UI assets (e.g., login background)
-├─ tests/                   # Smoke tests
-├─ main.py                  # App entry point
-├─ DOCUMENTATION.md         # Detailed internal documentation
-├─ products.xlsx            # Default import template
-├─ dbProducts.xlsx          # Export output (generated)
-└─ sales.xlsx               # Sales export log (generated)
+|-- app/
+|   |-- data/             # Runtime database, logs, and backups
+|   |-- repositories/     # SQLite data-access layer
+|   |-- services/         # Sales and inventory business logic
+|   |-- ui/
+|   |   |-- controllers/  # UI workflow coordination
+|   |   |-- dialogs/      # Payment and admin dialogs
+|   |   |-- services/     # Cart state and calculations
+|   |   `-- views/        # Login and POS screens
+|   |-- db.py             # Schema, seed, backup, and restore
+|   |-- security.py       # PIN hashing and verification
+|   `-- settings.py       # Tax configuration
+|-- tests/                # Smoke tests
+|-- main.py               # Application entry point
+|-- products.xlsx         # Sample product catalog
+`-- DOCUMENTATION.md      # Detailed technical documentation
 ```
 
-## Configuration
+## Data and backups
 
-- `app/ui/config.py`: UI palette, fonts, spacing, and widget sizing.
-- `app/settings.py`: Tax settings (`TAX_RATE`, `TAX_ROUNDING`).
-- `app/db.py`: Database path (`app/data/pos.db`) and seed users.
-- .ini / .env: Not specified (no external config loader in code).
+PyPOS creates operational files locally; generated databases, backups, exports, and logs are excluded from version control.
 
-# Images
+| File or directory | Purpose |
+| --- | --- |
+| `app/data/pos.db` | SQLite application database |
+| `app/data/backups/` | Timestamped logout and pre-restore backups |
+| `app/data/pos.log` | Rotating runtime log |
+| `sales.xlsx` | Checkout export log |
+| `dbProducts.xlsx` | Exported product catalog |
 
-Log in UI
+## Development
 
-* Use PNG file, place inside /assets folder **named **"shop.png**".**
+Run the smoke-test suite from the repository root:
 
-![1768563114150](image/README/1768563114150.png)
+```bash
+python -m unittest tests.test_smoke -v
+```
 
-POS UI
+The tests cover product import/update, product export, and database backup/restore. For a file-by-file guide to the codebase and its workflows, see [`DOCUMENTATION.md`](DOCUMENTATION.md).
 
-![1768563188751](image/README/1768563188751.png)
+### Build a Windows executable
 
-User management dialog box: **Admin access only**
+Install PyInstaller, then run:
 
-![1768563195635](image/README/1768563195635.png)
+```powershell
+python -m pip install pyinstaller
+python -m PyInstaller --noconfirm --clean --name "PyPOS" --windowed --icon "assets\pos.ico" --add-data "assets;assets" --add-data "app\data;app\data" --contents-directory . main.py
+```
+
+The packaged application is written to `dist/PyPOS/`.
+
+## Contributing
+
+Issues and pull requests are welcome. When making a change, keep database access inside repositories, business rules inside services, and UI event handling inside the controller layer. Please run the smoke tests before submitting a pull request.
+
+## License
+
+PyPOS is released under the [MIT License](LICENSE).
